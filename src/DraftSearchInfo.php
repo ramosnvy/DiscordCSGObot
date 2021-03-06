@@ -5,7 +5,7 @@ namespace Ramos\HttpRequest\DraftSearch;
 use GuzzleHttp\ClientInterface;
 use Symfony\Component\DomCrawler\Crawler;
 
-class DraftSearchTeam
+class DraftSearchInfo
 {
     private $httpClient;
     private $crawler;
@@ -16,7 +16,7 @@ class DraftSearchTeam
         $this->crawler = $crawler;
     }
 
-    public function requestTeam($url): array
+    public function requestInfo($url): array
     {
         $elementTest = [];
 
@@ -24,11 +24,11 @@ class DraftSearchTeam
         $html = $answer->getBody();
         $this->crawler->addHtmlContent($html);
 
-        $elementsTeam = $this->crawler->filter('div.FeaturedMatchCard__Team-p3u2z5-4.gFaxwi');
+        $elementsInfo = $this->crawler->filter('div.FeaturedMatchCard__Tournament-p3u2z5-2.oMWgc');
 
 
-        foreach ($elementsTeam as $elementTeam) {
-            $elementTest[] = $elementTeam->textContent;
+        foreach ($elementsInfo as $elementInfo) {
+            $elementTest[] = $elementInfo->textContent;
         }
         return $elementTest;
     }

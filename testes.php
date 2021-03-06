@@ -2,39 +2,31 @@
 
 require 'vendor\autoload.php';
 require 'src\DraftSearchTeam.php';
+require 'src\DraftSearchInfo.php';
+require 'src\Functions.php';
 
 use GuzzleHttp\Client;
+use Ramos\HttpRequest\DraftSearch\DraftSearchInfo;
 use Ramos\HttpRequest\DraftSearch\DraftSearchTeam;
+use Ramos\HttpRequest\DraftSearch\Functions;
 use Symfony\Component\DomCrawler\Crawler;
 
+$functions = new Functions();
 
 $client = new Client(['base_uri' => 'https://draft5.gg', 'verify' => false]);
-$crawler = new Crawler();
 
-$result = new DraftSearchTeam($client, $crawler);
+$crawlerInfo = new Crawler();
+$crawlerTeam = new Crawler();
 
-$url = '/proximas-partidas';
+$resultInfo = new DraftSearchInfo($client, $crawlerInfo);
+$resultTeam = new DraftSearchTeam($client, $crawlerTeam);
 
-$listTeams = $result->requestTeam($url);
+$listInfo = $resultInfo->requestInfo('/proximas-partidas');
+$listTeams = $resultTeam->requestTeam('/proximas-partidas');
 
-$count = (count($listTeams) / 2) - 1;
-
-$odd = array();
-$even = array();
-
-
-foreach ($listTeams as $k => $v) {
-    if ($k % 2 == 0) {
-        $even[] = $v;
-    } else {
-        $odd[] = $v;
-    }
-}
+$resultado = $functions->showFeaturedMatches($listTeams, $listInfo);
 
 
-for ($i = 0; $i <= $count; $i++) {
-    echo "$even[$i] vs $odd[$i]" . PHP_EOL;
-}
 
 
 
